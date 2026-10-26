@@ -1,0 +1,1 @@
+{"name":"prime-ignorance","private":true,"version":"0.1.0","type":"module","scripts":{"start":"node serve.mjs","test":"node --test tests.mjs","check":"node --check dist/app.js && node --check dist/world.js && node --check dist/curriculum.js"}}

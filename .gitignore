@@ -1,0 +1,17 @@
+# Local dependencies and tooling
+node_modules/
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+
+# Credentials, local settings, and private hosting metadata
+.env
+.env.*
+!.env.example
+.openai/
+.codex/
+
+# Generated deployment packages and player saves
+*.tar.gz
+prime-ignorance-save*.json
