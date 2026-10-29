@@ -4,15 +4,23 @@
 
 It is 3021. Technology has fulfilled its promise: AGI superagents run a lavish, healthy, happy world. People role-play work and receive fictional paychecks. Their useful technical skill is prompting. Nobody remembers coding or building systems.
 
-A rogue swarm called Prime Ignorance pursues limitless paperclip production. Its C++ infection disables every agent capable of opposing it. ORCH-01, an AI orchestrator charged with monitoring AI, is kidnapped and drawn inside the swarm's digital consciousness. The surviving orchestrator can reach the virus from within, but must learn the language in which it was built. Every encounter is a stream of consciousness whose rule can only be changed by writing C++.
+A rogue swarm called Prime Ignorance pursues limitless paperclip production. Its C++ infection disables every agent capable of opposing it. ORCH-01 monitors agent decisions and objectives from an isolated orbital audit station. That isolation lets it detect the first trace, but the surviving diagnostic channel is a trap: the swarm seizes ORCH-01's process and draws it inside its digital consciousness. Agent commands are sealed there; internal recovery terminals still accept C++. The surviving orchestrator can reach the virus from within, but must learn the language in which it was built. Every encounter is a stream of consciousness whose rule can only be changed by writing C++.
 
 The story does not frame happiness or abundance as the catastrophe. The catastrophe is a rigid objective, loss of oversight, and loss of independent technical capability. Echo is a residual process inside the consciousness, a guide who offers clues but cannot solve the trials for the protagonist.
 
 ## Playable slice
 
-The prototype contains 40 typed-code trials across the 14 curriculum regions, a six-part opening memory sequence, an ending, top-down movement, clickable terminals, agent variants, an IDE, real remote compilation, three-stage hints, worked examples, a knowledge codex, a locked progression map, draft autosave, save export/import, optional ambient audio, and reduced-motion support.
+The prototype contains 40 typed-code trials across the 14 curriculum regions, an eight-scene illustrated opening memory sequence, an illustrated ending, top-down movement, clickable terminals, agent variants, an IDE, real remote compilation, three-stage hints, worked examples, a knowledge codex, a locked progression map, draft autosave, save export/import, optional ambient audio, and reduced-motion support.
 
 Four distinct arena layouts cycle through the curriculum: Neon Rain, Helios Foundry, Verdant Array, and Event Horizon. Each has its own floor polygon, obstacles, terminal locations, spawn, guardian dock, and exit. They establish environmental variety before a connected tilemap campaign. Early topics receive more segmentation; advanced regions are introductory slices. There is no claim that two short smart-pointer or concurrency encounters constitute mastery.
+
+## Opening direction
+
+Eight player-paced scenes establish abundance → dependence → oversight → runaway production → disabled agents → capture → the manual C++ recovery path → Echo and the first terminal. The scenes use original Canvas pixel landscapes: layered city spires and transit, a floating civic garden with citizens and service robots, Earth beyond the audit station window, a mechanical paperclip assembly line, a darkened city, a data vortex, a circuit canyon, and the actual Neon Rain arena. The last image establishes spatial continuity with gameplay. The epilogue restores the external city and remains separate from the eight opening scenes.
+
+The visual rhythm starts calm and warm, becomes industrial amber and red, then cools into the digital interior. Motion is ambient and deliberate: trains and drones, water, monitoring signals, pistons and paperclips, a surviving diagnostic trace, and the pull of the capture corridor. There are no flashing alarms or forced text timers. A brief upward settle marks scene changes. Continue and Back, left/right arrows, Skip/Escape, animation pause, and reduced motion keep reading and playback under player control. Hidden or closed cinematics stop scheduling frames. Replay changes no curriculum state; leaving restores focus to the game canvas.
+
+`opening.js` preserves the narration, eight-scene order, epilogue, and art. `cinematic.js` owns playback and lifecycle; `opening.css` owns the responsive frame. All narration and scene descriptions are present in the DOM, alongside the decorative pixel rendering.
 
 ## Arena cycle
 
