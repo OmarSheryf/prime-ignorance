@@ -11,7 +11,7 @@ You are ORCH-01, an AI orchestrator kidnapped and trapped inside the swarm's dig
 ## Current prototype
 
 - Four original pixel-art arenas with distinct geometry, environmental animation, collision, and click-to-walk navigation.
-- Room exploration, dialogue, opening story, and ending.
+- An eight-scene animated pixel-art opening, room exploration, dialogue, and an illustrated ending.
 - 40 typed-code encounters organized into 14 curriculum regions.
 - An embedded CodeMirror editor and real remote C++20 compilation using GCC 14.1 through Compiler Explorer.
 - Compiler diagnostics, output checks, hints, worked examples, and a knowledge codex.
@@ -19,6 +19,16 @@ You are ORCH-01, an AI orchestrator kidnapped and trapped inside the swarm's dig
 - Responsive layout, adjustable editor text, reduced motion, and optional synthesized audio.
 
 This is a playable prototype, not a complete adventure campaign or a C++ mastery course. Four arena layouts cycle by curriculum sector; advanced topics are introductory slices. Adaptive assessment, spaced practice, a connected exploration campaign, debugger visualizations, and substantial projects remain future work. See [game design](dist/GAME_DESIGN.md) for the gaps and progression plan.
+
+## Opening memory
+
+The opening moves through a golden future city, a floating civic garden, ORCH-01's orbital audit station, Prime Ignorance's paperclip factory, the citywide blackout, a hijacked data corridor, the internal C++ recovery gate, and the first playable rooftop. It explains the orchestrator's job, why the surviving audit channel becomes a trap, and why handwritten C++ is the remaining path to the swarm's objective.
+
+New players see it automatically. Use **Replay intro** below the game world, or the Prime Ignorance logo, to watch it again. Continue/Back and left/right arrows control the pace; Escape or Skip returns to the game. Landscapes animate independently of reading speed. Pause animation freezes them, and Reduce motion supplies still frames and stops transitions. Narration remains ordinary accessible text; replay preserves lessons, drafts, and recovery progress.
+
+![Animated opening: the world in 3021](docs/opening-preview.png)
+
+![Prime Ignorance takes the factories](docs/opening-catastrophe.png)
 
 ## Four neural environments
 
@@ -82,6 +92,9 @@ dist/
   sprites.js          Shared guardian and protagonist pixel art
   arenas.html         Read-only archive of all four environments
   arena-gallery.js    Archive rendering and reduced-motion controls
+  opening.js          Opening narration, story sequence, and pixel landscapes
+  cinematic.js        Opening playback, keyboard access, and lifecycle
+  opening.css         Responsive cinematic frame and narration
   curriculum.js       Regions, lessons, examples, hints, and checks
   style.css           Responsive game and IDE styling
   vendor/             Bundled editor, fonts, and third-party licenses
@@ -89,6 +102,7 @@ docs/                 Game and editor screenshots
 serve.mjs             Local static server
 tests.mjs             Curriculum and evaluation checks
 arena-tests.mjs       Arena cycle, reachability, collision, and renderer checks
+opening-tests.mjs     Narrative, scene boundaries, motion, and playback checks
 reference-solutions.mjs
 verify-compiler.mjs   Real compiler verification script
 ```

@@ -1,5 +1,14 @@
 # Verification — 26 October 2026
 
+## Illustrated opening update — 29 October 2026
+
+- All 23 automated tests pass: the existing 17 curriculum/arena checks and six opening checks. New coverage includes narrative prerequisites, scene and ending boundaries, distinct finite render geometry for all eight scenes, animated versus stable reduced-motion frames, cancellation on pause/hide/close, keyboard navigation, replay, and the ending call to action.
+- Syntax checks pass for all nine runtime JavaScript modules. No C++ curriculum, compiler submission, reference solution, or arena definition changed.
+- Browser-inspected all eight illustrations. Continue and Back/left-right arrows navigate correctly. Pause and reduced-motion controls work independently of text pacing; narration never advances on a timer.
+- Completed the opening through Enter Neon Rain: it returned focus to the game canvas in sector 00 with 0/40 fragments, and the first C++ editor opened normally. Replay, Escape, and a reload preserved progress and the seen-intro flag.
+- Checked the opening at 390 × 844, including the blackout narration: the dialog was about 375 pixels wide and 631 pixels tall without internal overflow. Reset the temporary viewport afterward.
+- No browser console warnings or errors were recorded during the initial cinematic check. New artwork is drawn locally with native Canvas; no new dependencies, third-party art, or network services were added.
+
 ## Four-arena update — 29 October 2026
 
 - Seventeen automated tests pass: the original four curriculum checks plus thirteen arena checks. They cover deterministic cycling across all fourteen sectors; four distinct floor polygons; reachable spawns, terminal approaches, guardian approaches, and exits; collision boundaries and thin-prop tunnelling; a route around the greenhouse pool; region resets; responsive pointer coordinates; sealed/recovered portal callbacks; and finite rendering geometry in ordinary, recovered, and reduced-motion states.
