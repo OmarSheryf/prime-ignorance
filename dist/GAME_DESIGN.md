@@ -12,7 +12,17 @@ The story does not frame happiness or abundance as the catastrophe. The catastro
 
 The prototype contains 40 typed-code trials across the 14 curriculum regions, a six-part opening memory sequence, an ending, top-down movement, clickable terminals, agent variants, an IDE, real remote compilation, three-stage hints, worked examples, a knowledge codex, a locked progression map, draft autosave, save export/import, optional ambient audio, and reduced-motion support.
 
-The same chamber framework is deliberately reused with sector context and agent variation. It establishes the gameplay loop before a full tilemap campaign. Early topics receive more segmentation; advanced regions are introductory slices. There is no claim that two short smart-pointer or concurrency encounters constitute mastery.
+Four distinct arena layouts cycle through the curriculum: Neon Rain, Helios Foundry, Verdant Array, and Event Horizon. Each has its own floor polygon, obstacles, terminal locations, spawn, guardian dock, and exit. They establish environmental variety before a connected tilemap campaign. Early topics receive more segmentation; advanced regions are introductory slices. There is no claim that two short smart-pointer or concurrency encounters constitute mastery.
+
+## Arena cycle
+
+Arena selection is deterministic: `arenaForRegion(region)` selects `region % 4`. Existing saves need no migration. The neural map labels each sector with its arena, and its arena archive link allows a read-only preview of all four.
+
+Neon Rain is a rain-soaked neon rooftop over a layered skyline, with cyan rails, magenta advertising, and a moving transit line. Helios Foundry contains an artificial sun above an industrial deck framed by molten conduits. Verdant Array is a glass-domed greenhouse around a circuit-rooted tree and a pool that must be walked around. Event Horizon is an octagonal orbital platform suspended in front of a black hole and accretion halo.
+
+All four use original code-drawn pixel art. Ambient motion is disabled by the existing reduced-motion setting. Guardian recovery changes terminal and portal illumination. Completed-sector portals advance to the next sector, even when the current encounter is an earlier completed lesson.
+
+Walkability uses a four-pixel logical character radius, polygon boundaries, and shared solid props. Keyboard movement slides along blocked axes using small substeps to prevent tunnelling. Click-to-walk uses an eight-connected search grid with corner checks, then only removes waypoints when the full shortcut is collision-free. Console and portal hit tests read the same metadata as the renderer, so changing an arena does not leave interactions in the previous room's positions.
 
 ## Core loop
 
@@ -49,7 +59,7 @@ The layout reflows for narrow screens; terminals remain operable with touch and 
 
 ## Implementation
 
-`curriculum.js` holds the ordered regions, lessons, teaching text, scaffolds, tests, hints, examples, and light pedagogical constraints. `world.js` draws original pixel art and handles movement. `app.js` manages game/UI state, local persistence, the editor, and compiler requests. `style.css` defines the responsive shell and IDE.
+`curriculum.js` holds the ordered regions, lessons, teaching text, scaffolds, tests, hints, examples, and light pedagogical constraints. `arenas.js` holds the four environment definitions and shared navigation/collision functions. `arena-art.js` renders their original pixel art; `sprites.js` contains shared characters. `world.js` handles movement, interactions, and the render loop. `app.js` manages game/UI state, local persistence, the editor, and compiler requests. `style.css` defines the responsive shell and IDE. `arenas.html` and `arena-gallery.js` provide the read-only arena archive.
 
 Whole-program trials execute the player's complete source. Function trials append a game-owned main that evaluates multiple calls and compares output. In the static prototype the test driver is available to the client. Do not advertise these as secure hidden tests or high-stakes certification. The small regular-expression constraints encourage a target construct, but only real successful compilation and output can grant a fragment.
 
@@ -59,7 +69,7 @@ Progress is stored per browser origin in localStorage and can be exported. Hints
 
 1. Expand the first two regions with prediction-before-run, trace mode, unfamiliar transfer variants, and a cumulative mini-project; observe novice learners before expanding content breadth.
 2. Add input handling, conversion limits, arrays, overloads, iterators, exceptions, composition, concepts, and multi-file projects according to CURRICULUM.md rather than advancing directly from the current introductory snippets.
-3. Author distinct rooms in Tiled, add guardian personalities and branching dialogue, and restore visible pieces of the external city as progress is made.
+3. Extend the four arena themes into a connected room campaign, add guardian personalities and branching dialogue, and restore visible pieces of the external city as progress is made.
 4. Replace the public compiler dependency with an owned isolated judge and dynamic tests before scaling to a large audience.
 5. Implement prerequisite-based diagnostic detours, delayed retrieval, assistance-aware mastery records, sanitizer explanations, and cumulative projects.
 6. Use an original open-ended capstone and design defense for proficiency assessment; keep the current fixed-output ending as a narrative prototype, not a mastery certificate.

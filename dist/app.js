@@ -1,5 +1,6 @@
 import {regions,lessons,makeSubmission,checkOutput,checkRequirements,normalizeOutput} from './curriculum.js';
 import {World,drawAgent,drawHero} from './world.js';
+import {arenaForRegion} from './arenas.js';
 const $=id=>document.getElementById(id),SAVE_KEY='prime-ignorance-v1';
 const defaults=()=>({version:1,current:0,introSeen:false,completed:[],drafts:{},hints:{},attempts:{},assisted:[],settings:{reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,font:15,sound:false},consent:false});
 function validateSave(s){if(!s||s.version!==1||!Array.isArray(s.completed))throw Error('Not a Prime Ignorance save.');const ids=new Set(lessons.map(l=>l.id));const d=defaults();d.completed=[...new Set(s.completed.filter(x=>ids.has(x)))];d.current=Number.isInteger(s.current)?Math.min(lessons.length-1,Math.max(0,s.current)):0;d.drafts={};for(const [key,value]of Object.entries(s.drafts||{})){if(ids.has(key)&&typeof value==='string'&&value.length<30000)d.drafts[key]=value;}for(const k of ['hints','attempts'])for(const [key,value]of Object.entries(s[k]||{})){if(ids.has(key)&&Number.isFinite(value)&&value>=0)d[k][key]=Math.floor(value);}d.assisted=(Array.isArray(s.assisted)?s.assisted:[]).filter(x=>ids.has(x));d.settings={reduced:!!s.settings?.reduced,font:[13,15,18].includes(s.settings?.font)?s.settings.font:15,sound:!!s.settings?.sound};d.consent=!!s.consent;let next=lessons.findIndex(l=>!d.completed.includes(l.id));if(next<0)next=lessons.length-1;d.current=Math.min(d.current,next);return d;}
@@ -7,7 +8,7 @@ let save;try{const raw=JSON.parse(localStorage.getItem(SAVE_KEY));save=validateS
 let storageAvailable=true;function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save));$('save-state').textContent='AUTOSAVED';}catch{storageAvailable=false;$('save-state').textContent='SESSION ONLY';document.querySelector('.game-footer>span').textContent='STORAGE UNAVAILABLE · EXPORT YOUR SAVE IN SETTINGS';}}
 let editor,loading=false,runId=0,controller,storyPage=0,audioContext,audioTimer,ambientGain,lastStep=0;
 const current=()=>lessons[save.current];const completed=id=>save.completed.includes(id);const firstUnsolved=()=>{const i=lessons.findIndex(l=>!completed(l.id));return i<0?lessons.length:i;};
-const world=new World($('world'),openTerminal,advance);world.reduced=save.settings.reduced;
+const world=new World($('world'),openTerminal,advanceSector);world.reduced=save.settings.reduced;
 const lines=[
 'You used to tell agents what to do. Down here, you have to tell the machine yourself. That terminal is still listening.',
 'The world above is still beautiful. Everyone is waiting for their agents to come back. We should not keep them waiting.',
@@ -16,8 +17,19 @@ const lines=[
 'There is no hurry here. Think through one line, then the next. That is how we get home.'
 ];let talkIndex=0;
 function portrait(){const c=$('portrait').getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,56,56);drawHero(c,28,29,0,false,1.65);const a=$('agent-portrait').getContext('2d');a.clearRect(0,0,96,80);drawAgent(a,48,33,0,completed(current().id)?'#91b78c':'#dd8c70',current().region,1.1);}
-function update(){const l=current(),r=regions[l.region],sector=lessons.filter(x=>x.region===r.id),done=sector.filter(x=>completed(x.id)).length;world.setRegion(r.id,done===sector.length);$('chapter-title').textContent=r.name;$('chapter-subtitle').textContent=r.subtitle;$('room-label').textContent='SECTOR '+String(r.id).padStart(2,'0')+' · '+r.name.toUpperCase();$('layer').textContent=String(r.id).padStart(2,'0');$('agent-name').textContent=r.agent.toUpperCase();$('encounter-number').textContent=String(sector.indexOf(l)+1).padStart(2,'0')+' / '+String(sector.length).padStart(2,'0');$('quest-type').textContent=l.skill.toUpperCase();$('quest-title').textContent=l.title;$('quest-description').textContent=l.story;$('objective-text').textContent=l.task;$('sector-progress').textContent=done+' / '+sector.length;$('sector-fill').style.width=done/sector.length*100+'%';$('total-progress').textContent=save.completed.length+' / '+lessons.length+' fragments recovered';$('open-terminal').querySelector('span').textContent=completed(l.id)?'REVISIT TERMINAL':'OPEN TERMINAL';portrait();document.body.classList.toggle('reduced-motion',save.settings.reduced);$('reduce-motion').checked=save.settings.reduced;$('font-size').value=save.settings.font;$('remote-consent').checked=save.consent;persist();}
-function showDialog(id){world.keys.clear();world.target=null;world.paused=true;if(!$(id).open)$(id).showModal();}
+function update(){
+ const l=current(),r=regions[l.region],a=arenaForRegion(r.id),sector=lessons.filter(x=>x.region===r.id),done=sector.filter(x=>completed(x.id)).length;
+ world.setRegion(r.id,done===sector.length);$('chapter-title').textContent=r.name;$('chapter-subtitle').textContent=r.subtitle;
+ $('room-label').textContent='SECTOR '+String(r.id).padStart(2,'0')+' · '+a.name.toUpperCase();$('layer').textContent=String(r.id).padStart(2,'0');
+ document.body.dataset.arena=a.id;document.documentElement.style.setProperty('--arena-accent',a.palette.accent);
+ $('world').dataset.arena=a.id;$('world').setAttribute('aria-label',a.name+'. '+a.description+' Move with WASD or arrows, click to walk, and press E near a terminal.');
+ $('agent-name').textContent=r.agent.toUpperCase();$('encounter-number').textContent=String(sector.indexOf(l)+1).padStart(2,'0')+' / '+String(sector.length).padStart(2,'0');
+ $('quest-type').textContent=l.skill.toUpperCase();$('quest-title').textContent=l.title;$('quest-description').textContent=l.story;$('objective-text').textContent=l.task;
+ $('sector-progress').textContent=done+' / '+sector.length;$('sector-fill').style.width=done/sector.length*100+'%';$('total-progress').textContent=save.completed.length+' / '+lessons.length+' fragments recovered';
+ $('open-terminal').querySelector('span').textContent=completed(l.id)?'REVISIT TERMINAL':'OPEN TERMINAL';portrait();document.body.classList.toggle('reduced-motion',save.settings.reduced);
+ $('reduce-motion').checked=save.settings.reduced;$('font-size').value=save.settings.font;$('remote-consent').checked=save.consent;persist();
+}
+function showDialog(id){world.keys.clear();world.target=null;world.path=[];world.paused=true;if(!$(id).open)$(id).showModal();}
 function closeDialog(id){if(id==='story-dialog'){save.introSeen=true;persist();}$(id).close();world.paused=!!document.querySelector('dialog[open]');if(!world.paused)$('world').focus({preventScroll:true});}
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeDialog(b.dataset.close));
 document.querySelectorAll('dialog').forEach(d=>{d.addEventListener('close',()=>{world.paused=!!document.querySelector('dialog[open]');if(d.id==='terminal-dialog'){controller?.abort();runId++;loading=false;$('run-code').disabled=false;$('run-code').innerHTML='▶ COMPILE & RUN <kbd>Ctrl ↵</kbd>';}});d.addEventListener('click',e=>{if(e.target===d){const rect=d.getBoundingClientRect();if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)closeDialog(d.id);}});});
@@ -41,14 +53,31 @@ async function runCode(){if(loading)return;if(!save.consent){showOutput('Enable 
  else{let detail='PROGRAM RAN — THE ENCOUNTER IS NOT SOLVED YET\n\n';if(!passed){if(l.tests){const actual=normalizeOutput(stdout).split('\n');detail+=l.tests.map((t,i)=>(actual[i]===t[1]?'✓':'×')+' '+t[0]+'\n  expected: '+t[1]+'  received: '+(actual[i]??'(no value)')).join('\n');}else detail+='Expected:\n'+l.expected+'\n\nReceived:\n'+(stdout||'(no output)');}if(issues.length)detail+='\n\nLearning objective: '+issues.join(' ');showOutput(detail,'error');tone(145,.12,.02);}
  }catch(error){if(id!==runId)return;showOutput(error.name==='AbortError'?'COMPILER REQUEST TIMED OUT\nThe remote compiler did not respond in time. Your code is saved. Try again.':'COMPILER UNAVAILABLE\n'+error.message+'\n\nYour code is saved. Check your connection or try later. No progress is awarded until real C++ runs successfully.','error');}finally{clearTimeout(timeout);if(id===runId){loading=false;$('run-code').disabled=false;$('run-code').innerHTML='▶ COMPILE & RUN <kbd>Ctrl ↵</kbd>';}}
 }
-function advance(){if(!completed(current().id)){openTerminal();return;}if(save.current===lessons.length-1){closeDialog('terminal-dialog');storyPage=6;renderStory();showDialog('story-dialog');return;}const old=current().region;save.current++;update();closeDialog('terminal-dialog');if(current().region!==old){$('sector-notice').textContent=regions[current().region].name.toUpperCase();setTimeout(()=>$('sector-notice').textContent='',1800);$('dialogue-text').textContent='A new stream of consciousness. '+regions[current().region].agent+' is waiting. We take it one thought at a time.';}else $('dialogue-text').textContent=current().story;}
+function advance(){
+ if(!completed(current().id)){openTerminal();return;}
+ if(save.current===lessons.length-1){closeDialog('terminal-dialog');storyPage=6;renderStory();showDialog('story-dialog');return;}
+ enterLesson(save.current+1);
+}
+function advanceSector(){
+ if(!world.complete)return;
+ const next=lessons.findIndex(l=>l.region>current().region);
+ if(next<0){advance();return;}
+ enterLesson(next);
+}
+function enterLesson(index){
+ const old=current().region;save.current=index;update();closeDialog('terminal-dialog');
+ if(current().region!==old){
+  const arena=arenaForRegion(current().region);$('sector-notice').textContent=arena.name.toUpperCase();setTimeout(()=>$('sector-notice').textContent='',1800);
+  $('dialogue-text').textContent=arena.tagline+' '+regions[current().region].agent+' is waiting. We take it one thought at a time.';
+ }else $('dialogue-text').textContent=current().story;
+}
 function showMap(){
  const grid=$('map-grid');grid.replaceChildren();const unlocked=firstUnsolved();
  for(const r of regions){
   const ls=lessons.filter(l=>l.region===r.id),index=lessons.indexOf(ls[0]),n=ls.filter(l=>completed(l.id)).length,locked=index>unlocked;
   const b=document.createElement('button');b.className='map-node'+(locked?' locked':'')+(r.id===current().region?' current':'');b.disabled=locked;
   b.innerHTML='<span class="node-id">'+String(r.id).padStart(2,'0')+' / '+(locked?'SEALED':n===ls.length?'RECOVERED':'ACCESSIBLE')+'</span><h3></h3><p></p><small></small>';
-  b.querySelector('h3').textContent=r.name;b.querySelector('p').textContent=r.skills;b.querySelector('small').textContent=n+' / '+ls.length+' trials'+(r.id>=6?' · introductory slice':'');
+  b.querySelector('h3').textContent=r.name;b.querySelector('p').textContent=r.skills;b.querySelector('small').textContent=n+' / '+ls.length+' trials · '+arenaForRegion(r.id).name+(r.id>=6?' · introductory slice':'');
   b.onclick=()=>{showRegionTrials(r.id);$('map-trials').scrollIntoView({block:'nearest',behavior:save.settings.reduced?'instant':'smooth'});};grid.append(b);
  }
  showRegionTrials(current().region);showDialog('map-dialog');
@@ -72,7 +101,7 @@ async function setSound(enabled){save.settings.sound=enabled;if(enabled){try{aud
 $('open-terminal').onclick=openTerminal;$('world').addEventListener('pointerdown',e=>world.click(e));$('talk').onclick=()=>{$('dialogue-text').textContent=lines[++talkIndex%lines.length];tone(330,.07,.015);};$('memory').onclick=startStory;$('map-nav').onclick=showMap;$('codex-nav').onclick=showCodex;$('play-nav').onclick=()=>{$('world').focus();};document.querySelector('.brand').onclick=e=>{e.preventDefault();startStory();};$('settings').onclick=()=>showDialog('settings-dialog');$('credits').onclick=()=>showDialog('credits-dialog');$('sound').onclick=()=>setSound(!save.settings.sound);$('audio-setting').onchange=e=>setSound(e.target.checked);$('reduce-motion').onchange=e=>{save.settings.reduced=e.target.checked;world.reduced=e.target.checked;update();};$('font-size').onchange=e=>{save.settings.font=Number(e.target.value);if(editor){editor.getWrapperElement().style.fontSize=save.settings.font+'px';editor.refresh();}persist();};$('remote-consent').onchange=e=>{save.consent=e.target.checked;persist();};$('run-code').onclick=runCode;$('next-encounter').onclick=advance;$('clear-output').onclick=()=>showOutput('Output cleared.');$('reset-code').onclick=()=>{if(getCode()!==current().starter&&!confirm('Replace the code in this encounter with its starter? Your other progress will stay saved.'))return;setCode(current().starter);showOutput('Starter restored.');};$('hint-button').onclick=()=>{const l=current();const n=Math.min(save.hints[l.id]||0,l.hints.length-1);$('hint-text').textContent=l.hints[n];save.hints[l.id]=Math.min(n+1,l.hints.length);$('hint-count').textContent=save.hints[l.id]+' / '+l.hints.length;persist();};$('solution-button').onclick=()=>{const l=current();$('example-note').textContent='Analogous example — adapt the idea and type your own solution.';const pre=document.createElement('pre');pre.textContent=l.example;$('hint-text').replaceChildren(pre);save.hints[l.id]=Math.max(1,save.hints[l.id]||0);$('hint-count').textContent=save.hints[l.id]+' / '+l.hints.length;persist();};
 $('export-save').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(save,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='prime-ignorance-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('settings-status').textContent='Save exported.';};$('import-save').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>2000000)throw Error('Save is too large.');save=validateSave(JSON.parse(await f.text()));world.reduced=save.settings.reduced;update();$('settings-status').textContent='Save imported. Your expedition is restored.';}catch(err){$('settings-status').textContent='Could not import: '+err.message;}e.target.value='';};
 window.addEventListener('keydown',e=>{const key=e.key.toLowerCase();if(document.querySelector('dialog[open]')){if($('terminal-dialog').open&&(e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runCode();}return;}if(['w','a','s','d','arrowup','arrowleft','arrowdown','arrowright'].includes(key)){e.preventDefault();world.keys.add(key);if(performance.now()-lastStep>300){tone(70,.035,.007);lastStep=performance.now();}}if(!e.repeat){if(key==='e'){e.preventDefault();if(!world.interact()){$('dialogue-text').textContent='Move closer to the eye or a green terminal. You can also click a terminal or use OPEN TERMINAL.';}}if(key==='m')showMap();if(key==='c')showCodex();}});window.addEventListener('keyup',e=>world.keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>world.keys.clear());
-setInterval(()=>{$('coordinates').textContent='X: '+String(Math.round(world.x)).padStart(4,'0')+'   Y: '+String(Math.round(world.y)).padStart(4,'0');$('interact-prompt').innerHTML=world.nearTerminal()?'<kbd>E</kbd> ACCESS TERMINAL':'<kbd>W A S D</kbd> MOVE · CLICK A TERMINAL';},200);
+setInterval(()=>{$('coordinates').textContent='X: '+String(Math.round(world.x)).padStart(4,'0')+'   Y: '+String(Math.round(world.y)).padStart(4,'0');$('interact-prompt').innerHTML=world.complete&&world.nearPortal()?'<kbd>E</kbd> ENTER NEXT SECTOR':world.nearTerminal()?'<kbd>E</kbd> ACCESS TERMINAL':'<kbd>W A S D</kbd> MOVE · CLICK A TERMINAL';},200);
 update();renderStory();
 // Audio always waits for an explicit gesture, even if a prior save had it enabled.
 save.settings.sound=false;$('audio-setting').checked=false;
