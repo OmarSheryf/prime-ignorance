@@ -10,14 +10,30 @@ You are ORCH-01, an AI orchestrator kidnapped and trapped inside the swarm's dig
 
 ## Current prototype
 
-- Original code-drawn pixel art, room exploration, dialogue, opening story, and ending.
+- Four original pixel-art arenas with distinct geometry, environmental animation, collision, and click-to-walk navigation.
+- Room exploration, dialogue, opening story, and ending.
 - 40 typed-code encounters organized into 14 curriculum regions.
 - An embedded CodeMirror editor and real remote C++20 compilation using GCC 14.1 through Compiler Explorer.
 - Compiler diagnostics, output checks, hints, worked examples, and a knowledge codex.
 - Locked progression, individual lesson replay, local draft/progress saves, and save export/import.
 - Responsive layout, adjustable editor text, reduced motion, and optional synthesized audio.
 
-This is a playable prototype, not a complete adventure campaign or a C++ mastery course. The chamber framework is reused; advanced topics are introductory slices. Adaptive assessment, spaced practice, distinct world maps, debugger visualizations, and substantial projects remain future work. See [game design](dist/GAME_DESIGN.md) for the gaps and progression plan.
+This is a playable prototype, not a complete adventure campaign or a C++ mastery course. Four arena layouts cycle by curriculum sector; advanced topics are introductory slices. Adaptive assessment, spaced practice, a connected exploration campaign, debugger visualizations, and substantial projects remain future work. See [game design](dist/GAME_DESIGN.md) for the gaps and progression plan.
+
+## Four neural environments
+
+| Arena | Theme and landmark | Curriculum sectors |
+|---|---|---|
+| Neon Rain | Cyan skybridges, magenta holograms, rain, and a futuristic rooftop skyline | 00, 04, 08, 12 |
+| Helios Foundry | A contained fusion sun, molten conduits, hazard stripes, and steel machinery | 01, 05, 09, 13 |
+| Verdant Array | A bioluminescent neural tree, glass greenhouse, botanical pods, and turquoise water | 02, 06, 10 |
+| Event Horizon | An orbital octagon above a black hole, accretion rings, and icy crystal pylons | 03, 07, 11 |
+
+The next sector advances to the next arena, repeating after the fourth. Every arena has its own spawn, guardian dock, two terminals, obstacles, and exit. Keyboard collision and click-to-walk routing share the same geometry. Recovered exits lead to the next sector, including when revisiting earlier lessons.
+
+Open **Neural map → View the four arenas** in the game, or visit `/arenas.html` on your local server. The archive previews all four environments without changing progress. Existing saves and all 40 C++ encounters remain compatible.
+
+![Four futuristic pixel-art arenas](docs/arenas-preview.png)
 
 ## Run locally
 
@@ -61,12 +77,18 @@ dist/
   index.html          Game interface
   app.js              Progression, editor, saves, compiler integration
   world.js            Original pixel renderer and movement
+  arenas.js           Arena definitions, collision, and pathfinding
+  arena-art.js        Four original environment renderers
+  sprites.js          Shared guardian and protagonist pixel art
+  arenas.html         Read-only archive of all four environments
+  arena-gallery.js    Archive rendering and reduced-motion controls
   curriculum.js       Regions, lessons, examples, hints, and checks
   style.css           Responsive game and IDE styling
   vendor/             Bundled editor, fonts, and third-party licenses
 docs/                 Game and editor screenshots
 serve.mjs             Local static server
 tests.mjs             Curriculum and evaluation checks
+arena-tests.mjs       Arena cycle, reachability, collision, and renderer checks
 reference-solutions.mjs
 verify-compiler.mjs   Real compiler verification script
 ```
