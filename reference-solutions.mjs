@@ -1,5 +1,7 @@
 // Development verification only. This file is outside the static deployment.
+import {expandedSolutions} from './expanded-solutions.mjs';
 export const solutions={
+...expandedSolutions,
 signal:'#include <iostream>\nint main(){std::cout << "SIGNAL"; return 0;}',
 sequence:'#include <iostream>\nint main(){std::cout << "ORCH-01\\nAWAKE"; return 0;}',
 diagnostic:'#include <iostream>\nint main(){std::cout << "RESTORED"; return 0;}',

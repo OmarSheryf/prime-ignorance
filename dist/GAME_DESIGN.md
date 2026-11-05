@@ -10,9 +10,9 @@ The story does not frame happiness or abundance as the catastrophe. The catastro
 
 ## Playable slice
 
-The prototype contains 40 typed-code trials across the 14 curriculum regions, an eight-scene illustrated opening memory sequence, an illustrated ending, top-down movement, clickable terminals, agent variants, an IDE, real remote compilation, three-stage hints, worked examples, a knowledge codex, a locked progression map, draft autosave, save export/import, optional ambient audio, and reduced-motion support.
+The expanded game contains 101 typed-code trials across the 14 curriculum regions, including 17 project encounters and a grid transfer project, an eight-scene illustrated opening, an ending, top-down movement, clickable terminals, agent variants, an IDE, real remote compilation, hints, worked examples, a knowledge codex, progression gates, draft autosave, save export/import, optional ambient audio, and reduced-motion support.
 
-Four distinct arena layouts cycle through the curriculum: Neon Rain, Helios Foundry, Verdant Array, and Event Horizon. Each has its own floor polygon, obstacles, terminal locations, spawn, guardian dock, and exit. They establish environmental variety before a connected tilemap campaign. Early topics receive more segmentation; advanced regions are introductory slices. There is no claim that two short smart-pointer or concurrency encounters constitute mastery.
+Four distinct arena layouts cycle through the curriculum: Neon Rain, Helios Foundry, Verdant Array, and Event Horizon. Each has its own floor polygon, obstacles, terminal locations, spawn, guardian dock, and exit. They establish environmental variety before a connected tilemap campaign. Advanced regions now include staged foundations, debugging, and integration rather than two isolated snippets. Passing visible checks still does not establish independent mastery; PROJECTS.md supplies extensions and a design-defense rubric.
 
 ## Opening direction
 
@@ -73,10 +73,14 @@ Whole-program trials execute the player's complete source. Function trials appen
 
 Progress is stored per browser origin in localStorage and can be exported. Hints and attempts are recorded. Assistance is displayed separately from independent completion, but there is no adaptive mastery score or implemented spaced-review scheduler. No analytics, login system, secrets, database, or player account backend is required.
 
+The expanded encounter data lives in `curriculum-expansion.js`; stable legacy IDs are retained in `curriculum.js`. Each encounter has an ordered prerequisite, phase, and estimated duration. `progression.js` migrates the old numeric current position to version-2 stable IDs while retaining completed fragments, drafts, guidance, and settings. Newly inserted prerequisites stay required; replaying an old solved lesson cannot bypass them. Notes are saved locally per encounter.
+
+`judge.js` runs each listed stdin case separately and requires all to pass. Five multi-file workspaces submit an entry/check translation unit plus headers and additional `.cpp` files to GCC 14.1 for separate compilation and linking. The tests and build recipe are visible and read-only in the editor, not secret or tamper-proof assessment. Editable sources save independently. ZIP export supplies ordinary files and CMake/CTest configuration for native builds. The capstone separates parser, allocation, and orchestration layers and tests their contracts and integration. Profiling lessons measure elapsed time and operation counts without imposing noisy machine-specific speed thresholds.
+
 ## Next content milestones
 
-1. Expand the first two regions with prediction-before-run, trace mode, unfamiliar transfer variants, and a cumulative mini-project; observe novice learners before expanding content breadth.
-2. Add input handling, conversion limits, arrays, overloads, iterators, exceptions, composition, concepts, and multi-file projects according to CURRICULUM.md rather than advancing directly from the current introductory snippets.
+1. Observe beginners using the 101-encounter route; calibrate granularity, scaffolding, project duration, and diagnostic detours from retention and transfer evidence.
+2. Add execution tracing, unfamiliar generated cases, and a delayed-review scheduler; the current planning/reflection prompts and fixed transfer cases are initial content support.
 3. Extend the four arena themes into a connected room campaign, add guardian personalities and branching dialogue, and restore visible pieces of the external city as progress is made.
 4. Replace the public compiler dependency with an owned isolated judge and dynamic tests before scaling to a large audience.
 5. Implement prerequisite-based diagnostic detours, delayed retrieval, assistance-aware mastery records, sanitizer explanations, and cumulative projects.

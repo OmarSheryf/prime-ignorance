@@ -1,4 +1,5 @@
 // Progression is data, not game logic. Full teaching specification: CURRICULUM.md.
+import {expandCurriculum} from './curriculum-expansion.js';
 export const regions = [
  ['The Terminal','Every escape begins with a single line.','Null Warden','Execution · output · compiler errors','#b99a60'],
  ['Data Caverns','Give a name to what you need to save.','The Hoarder','Variables · types · arithmetic · const','#80956e'],
@@ -19,7 +20,7 @@ export const regions = [
 const out=(id,region,title,skill,story,teaching,task,starter,expected,hints,example,requirements=[])=>({id,region,title,skill,story,teaching,task,starter,expected,hints,example,requirements,mode:'program'});
 const fn=(id,region,title,skill,story,teaching,task,starter,tests,hints,example,requirements=[])=>({id,region,title,skill,story,teaching,task,starter,tests,hints,example,requirements,mode:'function',expected:tests.map(t=>t[1]).join('\n')});
 const io='#include <iostream>\n\n';
-export const lessons = [
+export const legacyLessons = [
 out('signal',0,'Make yourself heard.','Program output','The warden has sealed your voice. Write your first C++ program to restore a signal.',
 'A program starts in <code>main()</code>. <code>std::cout</code> writes to the terminal. Put text inside double quotes and end the statement with a semicolon.<pre>std::cout &lt;&lt; "Hello";</pre>',
 'Inside main, print the exact word SIGNAL. Keep the include line and the function braces.',io+'int main() {\n    // Send your first signal here.\n\n    return 0;\n}\n','SIGNAL',
@@ -254,8 +255,10 @@ fn('prime',13,'Rewrite the objective.','Integration','Prime Ignorance has only o
 'int sumEven(const std::vector<int>& values) {\n    int total = 0;\n    for (int value : values) {\n        if (value % 2 == 0) total += value;\n    }\n    return total;\n}')
 ];
 
+export const lessons=expandCurriculum(legacyLessons);
+
 export function makeSubmission(lesson,source){
- if(lesson.mode==='program') return source;
+ if(lesson.mode!=='function') return source;
  return '#include <iostream>\n' + source + '\n\n// Game-owned test driver: each line is one independent check.\nint main() {\n' + lesson.tests.map(t=>'    std::cout << ('+t[0]+') << "\\n";').join('\n')+'\n}\n';
 }
 export const normalizeOutput=s=>s.replace(/\r/g,'').trimEnd();

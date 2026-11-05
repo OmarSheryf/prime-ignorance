@@ -12,13 +12,16 @@ You are ORCH-01, an AI orchestrator kidnapped and trapped inside the swarm's dig
 
 - Four original pixel-art arenas with distinct geometry, environmental animation, collision, and click-to-walk navigation.
 - An eight-scene animated pixel-art opening, room exploration, dialogue, and an illustrated ending.
-- 40 typed-code encounters organized into 14 curriculum regions.
+- 101 typed-code encounters across 14 curriculum regions, including 17 project encounters and a grid-transfer project.
+- Real stdin test suites and five multi-file workspaces with separate compilation/linking, per-file drafts, visible checks, and source ZIP export.
 - An embedded CodeMirror editor and real remote C++20 compilation using GCC 14.1 through Compiler Explorer.
 - Compiler diagnostics, output checks, hints, worked examples, and a knowledge codex.
 - Locked progression, individual lesson replay, local draft/progress saves, and save export/import.
 - Responsive layout, adjustable editor text, reduced motion, and optional synthesized audio.
 
-This is a playable prototype, not a complete adventure campaign or a C++ mastery course. Four arena layouts cycle by curriculum sector; advanced topics are introductory slices. Adaptive assessment, spaced practice, a connected exploration campaign, debugger visualizations, and substantial projects remain future work. See [game design](dist/GAME_DESIGN.md) for the gaps and progression plan.
+The expanded progression adds input validation, conversions and limits, arrays, iterator safety, overloads, composition, exception cleanup, concepts, file persistence, build/link debugging, graph/grid search, thread lifetime, testing, and profiling. Each world includes integration work. See the [implemented progression](dist/PROGRESSION.md) and [project ladder with design defense](dist/PROJECTS.md).
+
+This remains a learning prototype rather than a validated C++ mastery course. The original curriculum includes learner assessment, delayed retrieval, diagnostic adaptation, and authentic independent work that cannot be certified by passing visible client-side tests. A connected exploration campaign, debugger/profiler visualization, and an owned isolated judge remain future work. Projects now have concrete briefs and native build exports; independent extensions and design review happen after export.
 
 ## Opening memory
 
@@ -41,7 +44,7 @@ New players see it automatically. Use **Replay intro** below the game world, or 
 
 The next sector advances to the next arena, repeating after the fourth. Every arena has its own spawn, guardian dock, two terminals, obstacles, and exit. Keyboard collision and click-to-walk routing share the same geometry. Recovered exits lead to the next sector, including when revisiting earlier lessons.
 
-Open **Neural map → View the four arenas** in the game, or visit `/arenas.html` on your local server. The archive previews all four environments without changing progress. Existing saves and all 40 C++ encounters remain compatible.
+Open **Neural map → View the four arenas** in the game, or visit `/arenas.html` on your local server. The archive previews all four environments without changing progress. Existing version-1 saves migrate to stable lesson IDs, retaining the original 40 completions and drafts. Newly inserted lessons remain required; completed old lessons remain available for replay.
 
 ![Four futuristic pixel-art arenas](docs/arenas-preview.png)
 
@@ -76,6 +79,8 @@ Progress is stored in the current browser origin. Use Settings to export/import 
 ## Curriculum and design
 
 - [Full preserved curriculum](dist/CURRICULUM.md)
+- [All 101 encounters, prerequisites, phases, and coverage](dist/PROGRESSION.md)
+- [Project briefs, native tooling labs, and review rubric](dist/PROJECTS.md)
 - [Story, mechanics, implementation scope, and expansion plan](dist/GAME_DESIGN.md)
 - [Framework, compiler, editor, and asset research](dist/RESEARCH.md)
 - [Verification performed and remaining limits](VERIFICATION.md)
@@ -96,6 +101,10 @@ dist/
   cinematic.js        Opening playback, keyboard access, and lifecycle
   opening.css         Responsive cinematic frame and narration
   curriculum.js       Regions, lessons, examples, hints, and checks
+  curriculum-expansion.js  Inserted learning steps and multi-file projects
+  progression.js      Save migration and prerequisite gates
+  judge.js            Stdin suites, multi-file requests, and ZIP export
+  curriculum.css      File tabs, test input, and reflection controls
   style.css           Responsive game and IDE styling
   vendor/             Bundled editor, fonts, and third-party licenses
 docs/                 Game and editor screenshots
@@ -103,8 +112,11 @@ serve.mjs             Local static server
 tests.mjs             Curriculum and evaluation checks
 arena-tests.mjs       Arena cycle, reachability, collision, and renderer checks
 opening-tests.mjs     Narrative, scene boundaries, motion, and playback checks
+progression-tests.mjs Save migration, gates, judging, and project export checks
 reference-solutions.mjs
-verify-compiler.mjs   Real compiler verification script
+expanded-solutions.mjs  Development-only references for the added encounters
+verify-native.mjs     All encounters with an installed C++20 compiler
+verify-compiler.mjs   Representative real remote compiler smoke checks
 ```
 
 ## Verification
@@ -114,13 +126,17 @@ npm test
 npm run check
 ```
 
-All 40 reference solutions were also verified against the real compiler. To repeat that check, run:
+All 101 reference encounters were verified with real local C++20 compilation and execution. With a C++20-capable `g++` on PATH, run:
 
 ```sh
-node verify-compiler.mjs
+npm run verify:cpp
 ```
 
-The script batches solutions into one request to reduce public-service load. Use it sparingly. Reference solutions are included for development and content verification; they are outside the static game directory.
+Set `CXX` to another compatible compiler executable if needed. The script uses a unique temporary directory, verifies 96 single-file encounters in 119 executions, then separately builds/links the five projects. CMake is not required for this verification script.
+
+`npm run verify:remote` checks representative input, concepts, header/linking, persistence, and capstone encounters against the game's GCC 14.1 service. Use `node verify-compiler.mjs --lesson=capstone-project` for a focused check; `--all` runs the entire route and should be used sparingly to avoid public-service load. Reference solutions stay outside the static game directory.
+
+Input lessons display every supplied stdin case and run all of them before awarding a fragment. Multi-file projects keep the visible checks and build recipe read-only, save each editable file separately, and export ordinary C++/header/CMake files. Code and project files are transmitted only after compiler opt-in and Run. Project files in the remote execution sandbox are temporary, not persistent player saves.
 
 ## Hosting
 

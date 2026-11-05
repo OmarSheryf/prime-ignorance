@@ -1,5 +1,15 @@
 # Verification — 26 October 2026
 
+## Teaching progression expansion — 5 November 2026
+
+- Inspected the preserved curriculum and original 40 encounters. Added 61 steps for 101 total, with 17 project encounters across all fourteen worlds and a separate grid transfer challenge. Kept every legacy lesson ID and the original CURRICULUM.md intact.
+- All 31 automated checks pass, including save migration, prerequisite ordering, legacy replay, locked test-file protection, stdin transmission and all-case gating, compiler/runtime failure rejection, separate source/link arguments, and byte-exact ZIP export.
+- Native GCC 13.2 in C++20 mode compiled/executed all 101 reference encounters: 96 single-file encounters across 119 executions, plus five separately compiled/linked projects. The multi-file capstone checks parsing, allocation, and orchestration independently and together.
+- Real GCC 14.1 / Compiler Explorer smoke checks passed for input, concepts, the header contract, score persistence, and the capstone. After expanding the capstone into three layers, its final parser/allocation/integration checks were verified again on that service.
+- Isolated DOM integration checks exercised the actual app module with both its fallback textarea and bundled CodeMirror editor: input-case completion, file switching, separate source drafts, read-only checks, reflection notes, and progression. The compiler response was mocked for these UI-flow tests; real C++ behavior was checked separately as above.
+- Full visual browser verification could not run: both browser/computer-control JavaScript tools failed during initialization with a missing kernel-assets path. The DOM checks do not establish visual layout quality or replace a future desktop/mobile browser pass. No unsupported browser fallback was used.
+- The private Site was not deployed; the requested delivery target is the GitHub repository. The static game remains buildless and has no new runtime dependencies. The temporary DOM library used for isolated QA lives outside this repository.
+
 ## Illustrated opening update — 29 October 2026
 
 - All 23 automated tests pass: the existing 17 curriculum/arena checks and six opening checks. New coverage includes narrative prerequisites, scene and ending boundaries, distinct finite render geometry for all eight scenes, animated versus stable reduced-motion frames, cancellation on pause/hide/close, keyboard navigation, replay, and the ending call to action.
