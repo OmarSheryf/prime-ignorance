@@ -37,7 +37,7 @@ export class World{
    const next=distance?moveWithinArena(this.arena,{x:this.x/2,y:this.y/2},dx/distance*step,dy/distance*step):{x:this.x/2,y:this.y/2};
    this.moving=Math.hypot(this.x/2-next.x,this.y/2-next.y)>.001;this.x=next.x*2;this.y=next.y*2;
   }else this.moving=false;
-  this.draw(t);if(this.running&&typeof requestAnimationFrame==='function')this.frame=requestAnimationFrame(time=>this.tick(time));
+  if(!this.suspended)this.draw(t);if(this.running&&typeof requestAnimationFrame==='function')this.frame=requestAnimationFrame(time=>this.tick(time));
  }
  draw(t){
   const c=this.ctx;c.save();c.scale(this.canvas.width/432,this.canvas.height/216);

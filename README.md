@@ -6,10 +6,12 @@ It is 3021. Superagents have built a healthy, happy, abundant world. Everyone kn
 
 You are ORCH-01, an AI orchestrator kidnapped and trapped inside the swarm's digital consciousness. Its infection is written in C++. To change its objective and get home, you must learn its language and write the code yourself.
 
-![Prime Ignorance game](docs/prime-ignorance-preview.png)
+![Prime Ignorance title screen: a rain-soaked factory city beneath an eclipsed sun](docs/title-menu-desktop.png)
 
 ## Current prototype
 
+- An original animated dystopian title screen, with resume, opening replay, calibration, and scenery pause.
+- A consistent teal/amber machine interface: numbered menu switches, mechanical button feedback, larger lesson text, and an 18 px editor with active-line tracking. Calibration also offers 21 and 24 px code; existing saved font choices remain available.
 - Four original pixel-art arenas with distinct geometry, environmental animation, collision, and click-to-walk navigation.
 - An eight-scene animated pixel-art opening, room exploration, dialogue, and an illustrated ending.
 - 101 typed-code encounters across 14 curriculum regions, including 17 project encounters and a grid-transfer project.
@@ -27,7 +29,9 @@ This remains a learning prototype rather than a validated C++ mastery course. Th
 
 The opening moves through a golden future city, a floating civic garden, ORCH-01's orbital audit station, Prime Ignorance's paperclip factory, the citywide blackout, a hijacked data corridor, the internal C++ recovery gate, and the first playable rooftop. It explains the orchestrator's job, why the surviving audit channel becomes a trap, and why handwritten C++ is the remaining path to the swarm's objective.
 
-New players see it automatically. Use **Replay intro** below the game world, or the Prime Ignorance logo, to watch it again. Continue/Back and left/right arrows control the pace; Escape or Skip returns to the game. Landscapes animate independently of reading speed. Pause animation freezes them, and Reduce motion supplies still frames and stops transitions. Narration remains ordinary accessible text; replay preserves lessons, drafts, and recovery progress.
+The title menu appears first. **Enter the machine** starts the introduction for new players; **Resume the signal** returns to an existing expedition. Use **The world before** on the menu or **Replay intro** below the game world to watch it again. The logo, **Menu**, or Escape while exploring returns to the title screen. Continue/Back and left/right arrows control the opening's pace; Escape or Skip closes it. Landscapes animate independently of reading speed. Pause animation freezes them, and Reduce motion supplies still frames and stops transitions. Narration remains ordinary accessible text; replay preserves lessons, drafts, and recovery progress.
+
+The menu city is original Canvas pixel art: an eclipsed sun, paperclip monument, layered habitation blocks, factories, gantry cranes, an elevated maintenance train, wet rooftops, and ORCH-01. Rain, smoke, trains, and drones animate at a capped 20 frames per second. Scenery stops when hidden, paused, or reduced; the hidden game world does not draw behind the menu. See [the interface design notes](dist/UI_DESIGN.md) and the [phone preview](docs/title-menu-mobile.png).
 
 ![Animated opening: the world in 3021](docs/opening-preview.png)
 

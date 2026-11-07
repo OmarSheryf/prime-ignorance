@@ -1,5 +1,13 @@
 # Verification — 26 October 2026
 
+## Dystopian menu and machine interface — 7 November 2026
+
+- All 34 automated tests pass. Added finite/animated title-art rendering, stable reduced-motion output, scenery scheduling/cancellation, and migration of the larger editor font settings. Syntax checks pass for all thirteen runtime modules.
+- Visually inspected the title screen and code terminal in the browser at the default 1280 × 720 viewport and at 390 × 844. The phone menu has a 390 px document width without horizontal overflow; the terminal fits its viewport and keeps 18 px code. Reset the temporary viewport afterward. Desktop and phone menu screenshots are in `docs/`.
+- Browser-checked first-time entry into the introduction, skipping into the game, opening the code terminal, returning through Menu, resuming after reload, scenery pause, reduced motion, and changing the editor preference to 21 px. The menu reports reduced motion and disables its scenery toggle. No browser console errors were recorded at the desktop menu check.
+- Repeated isolated DOM checks of the actual app for header-contract and capstone projects using bundled CodeMirror, plus read-input using the fallback editor. Menu entry, per-file drafts, read-only checks, notes, all-case completion gating, and progression pass. Compiler responses were mocked in these flow checks. C++ lesson sources, judge behavior, reference solutions, and compiler submission formats are unchanged in this redesign; the earlier native/remote compiler verification remains recorded below.
+- New artwork uses native Canvas with no generated bitmap assets or new runtime dependencies. UI motion respects the saved reduced-motion preference and the operating-system media query. Title animation stops behind dialogs, when hidden, on pause, and on entering the game; the hidden arena renderer is suspended while the menu is visible.
+
 ## Teaching progression expansion — 5 November 2026
 
 - Inspected the preserved curriculum and original 40 encounters. Added 61 steps for 101 total, with 17 project encounters across all fourteen worlds and a separate grid transfer challenge. Kept every legacy lesson ID and the original CURRICULUM.md intact.

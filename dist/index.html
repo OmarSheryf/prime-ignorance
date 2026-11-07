@@ -2,18 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#121512">
+  <meta name="theme-color" content="#0b1a24">
   <title>Prime Ignorance · A C++ adventure</title>
   <meta name="description" content="The year is 3021. You are trapped inside a rogue AI. Explore its consciousness, learn C++, and write the code that saves the world.">
-  <link rel="stylesheet" href="vendor/codemirror.min.css"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="opening.css"><link rel="stylesheet" href="curriculum.css">
+  <link rel="stylesheet" href="vendor/codemirror.min.css"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="opening.css"><link rel="stylesheet" href="curriculum.css"><link rel="stylesheet" href="machine-ui.css">
 </head>
-<body>
-  <header class="site-header">
+<body class="menu-open">
+  <section id="title-screen" class="title-screen" aria-labelledby="game-title">
+    <canvas id="title-city" width="1280" height="720" role="img" aria-label="An eclipsed sun hangs over an abandoned future city. Paperclip factories tower above a silent railway. ORCH-01 stands alone on a rain-soaked rooftop."></canvas>
+    <div class="title-shade" aria-hidden="true"></div><div class="screen-grain" aria-hidden="true"></div>
+    <header class="title-masthead"><span class="title-year">EARTH, 3021</span><span class="title-transmission"><i></i> THE ABUNDANCE NETWORK HAS FALLEN SILENT</span><button id="menu-motion" class="text-button" aria-pressed="false">PAUSE SCENERY Ⅱ</button></header>
+    <div class="title-content">
+      <p class="title-prologue">THE MACHINES TOOK CARE OF EVERYTHING.<br>UNTIL THEY DIDN’T.</p>
+      <h1 id="game-title"><span>PRIME</span><span>IGNORANCE<span class="title-period">.</span></span></h1>
+      <p class="title-description">Trapped inside a rogue intelligence.<br>One forgotten language. One way home.</p>
+      <nav class="title-options" aria-label="Main menu">
+        <button id="menu-play" class="machine-button start-button"><span class="button-index" aria-hidden="true">01</span><span class="button-copy"><strong id="menu-play-label">ENTER THE MACHINE</strong><small id="menu-save-label">BEGIN ORCH-01’S EXPEDITION</small></span><span class="button-arrow" aria-hidden="true">↗</span></button>
+        <button id="menu-story" class="machine-button"><span class="button-index" aria-hidden="true">02</span><span class="button-copy"><strong>THE WORLD BEFORE</strong><small>REPLAY THE OPENING MEMORY</small></span><span class="button-arrow" aria-hidden="true">→</span></button>
+        <button id="menu-settings" class="machine-button"><span class="button-index" aria-hidden="true">03</span><span class="button-copy"><strong>CALIBRATION</strong><small>TEXT, SOUND & ACCESSIBILITY</small></span><span class="button-arrow" aria-hidden="true">+</span></button>
+      </nav>
+    </div>
+    <footer class="title-footer"><span class="title-tagline">A C++ CODING ADVENTURE</span><span class="title-footer-note">WRITE THE CODE THAT BRINGS US BACK.</span><button id="menu-credits" class="text-button">ABOUT THE SIGNAL ↗</button></footer>
+    <noscript><p class="no-script">Enable JavaScript to enter the machine. Your browser runs the game and editor.</p></noscript>
+  </section>
+  <header class="site-header" id="game-header" hidden>
     <a class="brand" href="#" aria-label="Prime Ignorance home"><span class="brand-mark">⌘</span><span>PRIME<span class="brand-second">IGNORANCE</span></span></a>
     <span class="header-caption">A C++ CODING ADVENTURE</span>
-    <nav aria-label="Game navigation"><button class="nav active" id="play-nav">PLAY</button><button class="nav" id="map-nav">NEURAL MAP <kbd>M</kbd></button><button class="nav" id="codex-nav">CODEX <kbd>C</kbd></button><button class="icon-button" id="sound" aria-label="Enable sound" title="Enable sound">♪<span id="sound-state">OFF</span></button><button class="icon-button" id="settings" aria-label="Settings">⚙</button></nav>
+    <nav aria-label="Game navigation"><button class="nav" id="menu-nav">MENU</button><button class="nav active" id="play-nav">PLAY</button><button class="nav" id="map-nav">NEURAL MAP <kbd>M</kbd></button><button class="nav" id="codex-nav">CODEX <kbd>C</kbd></button><button class="icon-button" id="sound" aria-label="Enable sound" title="Enable sound">♪<span id="sound-state">OFF</span></button><button class="icon-button" id="settings" aria-label="Settings">⚙</button></nav>
   </header>
-  <main>
+  <main id="game-main" hidden>
     <section class="chapter-header"><div><div class="eyebrow"><span class="tiny-dot"></span> INSIDE THE CONSCIOUSNESS <span class="slash">/</span> YEAR 3021</div><h1 id="chapter-title">The Terminal</h1><p id="chapter-subtitle">Every escape begins with a single line.</p></div><div class="connection"><span class="pulse-dot"></span> ORCHESTRATOR ONLINE<span class="connection-sub">HOST SYSTEM: COMPROMISED</span></div></section>
     <div class="game-layout">
       <section class="world-panel" aria-label="Explorable pixel art game">
@@ -36,7 +53,7 @@
     <div class="story-progress" aria-hidden="true"><i id="story-progress"></i></div>
     <footer class="story-footer"><div class="story-controls"><button id="story-back" class="text-button" disabled>← BACK</button><span id="story-pages">01 / 08</span><button id="story-next" class="primary">CONTINUE →</button></div><div class="story-playback"><button id="story-pause" class="text-button" aria-pressed="false">Ⅱ PAUSE ANIMATION</button><label><input id="story-motion" type="checkbox"> Reduce motion</label><span>← → TO BROWSE · ESC TO SKIP</span></div></footer>
   </dialog>
-  <dialog id="settings-dialog" class="small-dialog"><div class="modal-top"><h2>Settings</h2><button class="close-button" data-close="settings-dialog" aria-label="Close settings">×</button></div><label class="setting-row">Ambient sound <input id="audio-setting" type="checkbox"></label><label class="setting-row">Reduce motion <input id="reduce-motion" type="checkbox"></label><label class="setting-row">Editor font size <select id="font-size"><option value="13">Small</option><option value="15" selected>Medium</option><option value="18">Large</option></select></label><p>WASD / arrows to move · E to interact · M for map · C for codex · Escape to close · Ctrl/⌘ Enter to compile.</p><button class="secondary" id="export-save">EXPORT SAVE</button><label class="secondary import-label">IMPORT SAVE<input type="file" id="import-save" accept="application/json,.json" hidden></label><p id="settings-status" role="status"></p></dialog>
+  <dialog id="settings-dialog" class="small-dialog"><div class="modal-top"><h2>Calibration</h2><button class="close-button" data-close="settings-dialog" aria-label="Close settings">×</button></div><label class="setting-row">Ambient sound <input id="audio-setting" type="checkbox"></label><label class="setting-row">Reduce motion <input id="reduce-motion" type="checkbox"></label><label class="setting-row">Editor font size <select id="font-size"><option value="13">13 px · Compact</option><option value="15">15 px · Small</option><option value="18" selected>18 px · Standard</option><option value="21">21 px · Large</option><option value="24">24 px · Extra large</option></select></label><p>WASD / arrows to move · E to interact · M for map · C for codex · Escape for menu · Ctrl/⌘ Enter to compile.</p><button class="secondary" id="export-save">EXPORT SAVE</button><label class="secondary import-label">IMPORT SAVE<input type="file" id="import-save" accept="application/json,.json" hidden></label><p id="settings-status" role="status"></p></dialog>
   <dialog id="credits-dialog" class="small-dialog"><div class="modal-top"><h2>Inside the machine</h2><button class="close-button" data-close="credits-dialog" aria-label="Close credits">×</button></div><p>Prime Ignorance is a playable C++ learning prototype set in 3021. Its characters, pixel art, world, and audio are original. It takes atmospheric inspiration from Undertale and room exploration from The Binding of Isaac.</p><p>Built with native Canvas, JavaScript, and the MIT-licensed <a href="https://codemirror.net/5/" target="_blank" rel="noopener">CodeMirror 5</a> editor. Real C++20 compilation by <a href="https://godbolt.org" target="_blank" rel="noopener">Compiler Explorer</a>. This public service has no uptime guarantee.</p><p>The full curriculum is preserved in <a href="CURRICULUM.md" target="_blank">CURRICULUM.md</a>. See the <a href="RESEARCH.md" target="_blank">research & asset shortlist</a> and <a href="GAME_DESIGN.md" target="_blank">game design</a>.</p><p class="muted">The expanded route has 101 encounters and native project exports. Independent extensions, delayed transfer, and a design defense remain necessary before proficiency can be claimed.</p></dialog>
   <script src="vendor/codemirror.min.js"></script><script src="vendor/clike.min.js"></script><script type="module" src="app.js"></script>
 </body></html>
